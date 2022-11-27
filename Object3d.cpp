@@ -25,6 +25,8 @@ CD3DX12_CPU_DESCRIPTOR_HANDLE Object3d::cpuDescHandleSRV;
 CD3DX12_GPU_DESCRIPTOR_HANDLE Object3d::gpuDescHandleSRV;
 XMMATRIX Object3d::matView{};
 XMMATRIX Object3d::matProjection{};
+XMMATRIX Object3d::matBillboard = XMMatrixIdentity();
+XMMATRIX Object3d::matBillboardY = XMMatrixIdentity();
 XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };
 XMFLOAT3 Object3d::target = { 0, 0, 0 };
 XMFLOAT3 Object3d::up = { 0, 1, 0 };
@@ -491,9 +493,9 @@ void Object3d::UpdateViewMatrix()
 
 	//0ベクトルだよ向きが定まらないので除外
 	assert(!XMVector3Equal(cameraAxisZ, XMVectorZero()));
-	assert(!XMVector3IsInfinite(cameraAxisZ);
+	assert(!XMVector3IsInfinite(cameraAxisZ));
 	assert(!XMVector3Equal(upVector, XMVectorZero()));
-	assert(!XMVector3IsInfinite(upVector);
+	assert(!XMVector3IsInfinite(upVector));
 
 	//ベクトルを正規化
 	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
@@ -501,9 +503,9 @@ void Object3d::UpdateViewMatrix()
 	//カメラのX軸(右方向)
 	XMVECTOR cameraAxisX;
 	//X軸は上方向→Z軸の外積で求まる
-	cameraAxisX = XMVector3Cross(ipVector, cameraAxisZ);
+	cameraAxisX = XMVector3Cross(upVector, cameraAxisZ);
 	//ベクトルを正規化
-	cameraAxisX = XMVecotr3Normalize(cameraAxisX);
+	cameraAxisX = XMVector3Normalize(cameraAxisX);
 	//カメラのY軸(上方向)
 	XMVECTOR cameraAxisY;
 	//Y軸は上方向→X軸の外積で求まる
@@ -524,7 +526,7 @@ void Object3d::UpdateViewMatrix()
 	XMVECTOR tY = XMVector3Dot(matCameraRot.r[1], reverseEyePosition); //Y成分
 	XMVECTOR tZ = XMVector3Dot(matCameraRot.r[2], reverseEyePosition); //Z成分
 	//1つのベクトルにまとめる
-	XMVECTOR translation = XMVectorSet(X.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
+	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 	//ビュー行列に平行移動成分を設定
 	matView.r[3] = translation;
 }

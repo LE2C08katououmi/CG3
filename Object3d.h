@@ -5,6 +5,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include <assert.h>
 
 /// <summary>
 /// 3Dオブジェクト
@@ -148,6 +149,10 @@ private: // 静的メンバ変数
 	static D3D12_VERTEX_BUFFER_VIEW vbView;
 	// インデックスバッファビュー
 	static D3D12_INDEX_BUFFER_VIEW ibView;
+	// ビルボード行列
+	static XMMATRIX matBillboard;
+	// Y軸周りビルボード行列
+	static XMMATRIX matBillboardY;
 
 private:// 静的メンバ関数
 	/// <summary>
